@@ -42,9 +42,9 @@ Baseada na versão original em C#/WPF desenvolvida por Vaibhav Pandey (VPZ), est
 
 ## 🚀 Como Usar
 
-1. **Acesse**: [https://vaibhavpandeyvpz.github.io/gtaimg/](https://vaibhavpandeyvpz.github.io/gtaimg/)
+1. **Acesse**: [https://ccor444.github.io/GTA-IMG-Tool-Web/)
 2. **Ou localmente**:
    ```bash
-   git clone https://github.com/vaibhavpandeyvpz/gtaimg.git
+   git clone [https://ccor444.github.io/GTA-IMG-Tool-Web//)
    cd gtaimg
    # Abra o index.html no seu navegador
