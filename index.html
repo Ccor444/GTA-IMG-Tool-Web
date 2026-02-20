@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTA IMG Tool Web by VPZ</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Custom Title Bar -->
+        <div class="title-bar">
+            <div class="title-bar-left">
+                <img src="assets/icon.svg" alt="GTA IMG Tool" class="app-icon">
+                <span class="app-title" id="windowTitle">GTA IMG Tool by VPZ</span>
+            </div>
+            <div class="title-bar-right">
+                <button class="window-btn minimize" id="minimizeBtn"><i class="fas fa-window-minimize"></i></button>
+                <button class="window-btn maximize" id="maximizeBtn"><i class="fas fa-window-maximize"></i></button>
+                <button class="window-btn close" id="closeBtn"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+
+        <!-- Menu Bar -->
+        <div class="menu-bar">
+            <div class="menu-item" id="fileMenu">
+                <span>File</span>
+                <div class="dropdown-menu">
+                    <div class="menu-option" id="newArchive"><i class="fas fa-file"></i> New Archive... <span class="shortcut">Ctrl+N</span></div>
+                    <div class="menu-option" id="openArchive"><i class="fas fa-folder-open"></i> Open Archive... <span class="shortcut">Ctrl+O</span></div>
+                    <div class="menu-option" id="saveArchive" disabled><i class="fas fa-save"></i> Save <span class="shortcut">Ctrl+S</span></div>
+                    <div class="menu-option" id="closeArchive" disabled><i class="fas fa-times"></i> Close <span class="shortcut">Ctrl+W</span></div>
+                    <div class="menu-divider"></div>
+                    <div class="menu-option" id="exitApp"><i class="fas fa-sign-out-alt"></i> Exit</div>
+                </div>
+            </div>
+            <div class="menu-item" id="editMenu">
+                <span>Edit</span>
+                <div class="dropdown-menu">
+                    <div class="menu-option" id="selectAll" disabled><i class="fas fa-check-square"></i> Select All <span class="shortcut">Ctrl+A</span></div>
+                    <div class="menu-divider"></div>
+                    <div class="menu-option" id="deleteSelected" disabled><i class="fas fa-trash"></i> Delete Selected <span class="shortcut">Del</span></div>
+                </div>
+            </div>
+            <div class="menu-item" id="importMenu">
+                <span>Import</span>
+                <div class="dropdown-menu">
+                    <div class="menu-option" id="importFiles" disabled><i class="fas fa-download"></i> Import Files...</div>
+                    <div class="menu-option" id="importFolder" disabled><i class="fas fa-folder"></i> Import Folder...</div>
+                </div>
+            </div>
+            <div class="menu-item" id="exportMenu">
+                <span>Export</span>
+                <div class="dropdown-menu">
+                    <div class="menu-option" id="exportSelected" disabled><i class="fas fa-upload"></i> Export Selected...</div>
+                    <div class="menu-option" id="exportAll" disabled><i class="fas fa-archive"></i> Export All...</div>
+                </div>
+            </div>
+            <div class="menu-item" id="toolsMenu">
+                <span>Tools</span>
+                <div class="dropdown-menu">
+                    <div class="menu-option" id="packArchive" disabled><i class="fas fa-compress"></i> Pack Archive</div>
+                    <div class="menu-divider"></div>
+                    <div class="menu-option" id="refresh" disabled><i class="fas fa-sync-alt"></i> Refresh <span class="shortcut">F5</span></div>
+                </div>
+            </div>
+            <div class="menu-item" id="helpMenu">
+                <span>Help</span>
+                <div class="dropdown-menu">
+                    <div class="menu-option" id="about"><i class="fas fa-info-circle"></i> About</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <button class="toolbar-btn" id="toolbarNew" title="New Archive (Ctrl+N)"><i class="fas fa-file"></i> New</button>
+            <button class="toolbar-btn" id="toolbarOpen" title="Open Archive (Ctrl+O)"><i class="fas fa-folder-open"></i> Open</button>
+            <button class="toolbar-btn" id="toolbarSave" title="Save Archive (Ctrl+S)" disabled><i class="fas fa-save"></i> Save</button>
+            
+            <div class="toolbar-divider"></div>
+            
+            <button class="toolbar-btn" id="toolbarImport" title="Import Files" disabled><i class="fas fa-download"></i> Import</button>
+            <button class="toolbar-btn" id="toolbarExport" title="Export Selected" disabled><i class="fas fa-upload"></i> Export</button>
+            <button class="toolbar-btn" id="toolbarDelete" title="Delete Selected (Del)" disabled><i class="fas fa-trash"></i> Delete</button>
+            
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search..." disabled>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState">
+                <h1>GTA IMG Tool</h1>
+                <p>Open or create an IMG archive to get started</p>
+                <div class="empty-state-buttons">
+                    <button class="btn-primary" id="emptyOpen"><i class="fas fa-folder-open"></i> Open Archive</button>
+                    <button class="btn-secondary" id="emptyNew"><i class="fas fa-file"></i> New Archive</button>
+                </div>
+                <p class="drag-hint">or drag and drop an IMG file here</p>
+            </div>
+
+            <!-- File List -->
+            <div class="file-list-container" id="fileListContainer" style="display: none;">
+                <table class="file-table" id="fileTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Size</th>
+                            <th>Offset</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fileTableBody">
+                        <!-- File entries will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Loading Overlay -->
+            <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+                <div class="spinner"><i class="fas fa-cog fa-spin"></i></div>
+                <div class="loading-message" id="loadingMessage">Loading...</div>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-left" id="statusMessage">Ready</div>
+            <div class="status-right">
+                <span id="archiveInfo"></span>
+                <span id="selectionCount"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dialogs -->
+    
+    <!-- About Dialog -->
+    <div class="dialog-overlay" id="aboutDialog" style="display: none;">
+        <div class="dialog">
+            <div class="dialog-header">
+                <h3>About GTA IMG Tool</h3>
+                <button class="dialog-close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="dialog-content">
+                <div class="about-content">
+                    <h2>GTA IMG Tool</h2>
+                    <p class="version">Version 1.0.0</p>
+                    
+                    <div class="game-logos">
+                        <img src="assets/gta3.svg" alt="GTA III">
+                        <img src="assets/gtavc.svg" alt="GTA Vice City">
+                        <img src="assets/gtasa.svg" alt="GTA San Andreas">
+                    </div>
+                    
+                    <p class="description">A tool for viewing and editing GTA IMG archive files.</p>
+                    
+                    <div class="author-info">
+                        <p>Developed by</p>
+                        <p class="author-name">Vaibhav Pandey (VPZ)</p>
+                    </div>
+                    
+                    <div class="links">
+                        <a href="#" id="linkWebsite">Website</a>
+                        <a href="#" id="linkYouTube">YouTube</a>
+                        <a href="#" id="linkGitHub">GitHub</a>
+                        <a href="#" id="linkEmail">Email</a>
+                        <a href="#" id="linkSupport">Support</a>
+                    </div>
+                    
+                    <p class="disclaimer">All names and logos are property of their respective owners and are used for illustration purposes only.</p>
+                </div>
+            </div>
+            <div class="dialog-footer">
+                <button class="btn-primary" id="aboutClose">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Dialog -->
+    <div class="dialog-overlay" id="confirmDialog" style="display: none;">
+        <div class="dialog" style="width: 420px;">
+            <div class="dialog-header">
+                <h3 id="confirmTitle">Confirm</h3>
+                <button class="dialog-close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="dialog-content">
+                <div class="confirm-content">
+                    <div class="confirm-icon" id="confirmIcon">
+                        <i class="fas fa-question-circle" style="color: #ff6a00;"></i>
+                    </div>
+                    <div class="confirm-text">
+                        <p id="confirmMessage">Are you sure?</p>
+                        <p id="confirmSubMessage" class="sub-message"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="dialog-footer">
+                <button class="btn-secondary" id="confirmCancel">Cancel</button>
+                <button class="btn-primary" id="confirmOk">Yes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Input Dialog -->
+    <div class="dialog-overlay" id="inputDialog" style="display: none;">
+        <div class="dialog" style="width: 400px;">
+            <div class="dialog-header">
+                <h3 id="inputTitle">Input</h3>
+                <button class="dialog-close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="dialog-content">
+                <div class="input-content">
+                    <p id="inputPrompt">Enter value:</p>
+                    <input type="text" id="inputField" class="input-field">
+                </div>
+            </div>
+            <div class="dialog-footer">
+                <button class="btn-secondary" id="inputCancel">Cancel</button>
+                <button class="btn-primary" id="inputOk">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Dialog -->
+    <div class="dialog-overlay" id="messageDialog" style="display: none;">
+        <div class="dialog" style="width: 420px;">
+            <div class="dialog-header">
+                <h3 id="messageTitle">Message</h3>
+                <button class="dialog-close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="dialog-content">
+                <div class="message-content">
+                    <div class="message-icon" id="messageIcon">
+                        <i class="fas fa-info-circle" style="color: #0091cd;"></i>
+                    </div>
+                    <p id="messageText" class="message-text"></p>
+                </div>
+            </div>
+            <div class="dialog-footer">
+                <button class="btn-primary" id="messageOk">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/img-entry.js"></script>
+    <script src="js/img-archive.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
